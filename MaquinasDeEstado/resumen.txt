@@ -1,0 +1,131 @@
+<- MAQUINAS DE ESTADO ->
+Es un modelo computacional que tiene una serie de estados que cambian entre sí
+
+<- FUNDAMENTOS DE MAQUINAS DE ESTADO ->
+- Diagrama de estado:
+Es una representación que hacemos de una máquina de estados para poderla ver de manera visual
+
+- Estados:
+Es una “Snapshot” o estatus del proceso actual
+
+- Transición:
+Es moverse de un estado al otro
+
+- Evento:
+Es la acción que ejecuta una transición
+
+<- Xstate ->
+Es una librería e intérprete para trabar con máquinas de estado y diagrama de estados en diferentes tecnologías
+
+<- CODIGO PARA CREAR STATE MACHINE ->
+import { createMachine } from 'xstate';
+
+const bookingMachine = createMachine({
+  id: 'buy plane tickets',
+  initial: 'initial',
+  states: {
+    initial: {
+      on: {
+        START: 'search'
+      }
+    },
+    search: {
+      on: {
+        CONTIUNE: 'passengers',
+        CANCEL: 'initial'
+      }
+    },
+    passengers: {
+      on: {
+        DONE: 'tickets',
+        CANCEL: 'initial'
+      }
+    },
+    tickets: {
+      on: {
+        FINISH: 'initial'
+      }
+    },
+  }
+})
+
+<- IMPLEMENTAR UNA MACHINE EN UN COMPONENTE DE REACT ->
+import React from 'react';
+import { useMachine } from '@xstate/react';
+import bookingMachine from '../Machines/bookingMachine';
+
+export const BaseLayout = ()=> {
+    const [state,send] = useMachine(bookingMachine)
+
+    console.log('machine', state)
+    return (
+        <div>State Machine</div>
+    )
+}
+
+<- PROPIEDADES DE MACHINES STATES EN XSTATE ->
+Value:
+Indica el nombre del estado actual
+Cuando se tiene una máquina padre y esta tiene una máquina hija, este nombre del estado actual pasa de ser una cadena de texto a un objeto
+Dicho objeto dice el estado tanto de la máquina padre como la máquina hija
+
+Context:
+Da el contexto del estado actual
+Nos permite guardar valores (Objetos, arrays, etc.)
+Es un pedazo de la máquina donde se va guardando y actualizando los valores
+
+Event:
+El nombre del evento anterior que nos trajo al estado actual
+
+Action:
+Es un array que contiene las acciones que ejecutan algún estado
+Son funciones de ejecutar y olvidar
+
+Activities (⚠️ Deprecated):
+Listado de actividades indicando si están en progreso o no
+Las actividades a diferencia de las acciones (ejecutar y olvidar) son cosas más permanentes (Invocar un servicio, observable)
+
+History:
+Indica el estado anterior
+Se implementa cuando deseamos saber cuál fue el estado anterior en caso de condicionales
+
+Meta:
+Sección de metadata dentro del estado
+Nos permite poner valores asociados al estado, los cuales serán permanentes
+
+NextEvents:
+Es un array de los posibles eventos que podemos ejecutar a partir del estado actual
+
+<- METODOS DE MACHINES STATES EN XSTATE ->
+matches(nombre del estado) ⇒ Pasando el nombre de un estado nos responde si dicho estado es el actual o no
+Nos ayuda a ver si estamos en un estado tanto de la máquina padre o hijo
+
+can(nombre del evento) ⇒ Pasando el nombre de un evento nos indica si podemos ejecutarlo
+
+<- EVENTOS Y TRANSICIONES ->
+Una transición se ejecuta de la siguiente manera:
+
+    - const yellowState = lightMachine.transition(green State, { type: 'TIMER });
+
+Tipos de transiciones:
+- Transiciones habilitadas
+Son transiciones que van a ocurrir si las llamamos
+
+- Transiciones Prohibidas
+Son transiciones que no se pueden ejecutar
+Porque no queremos que se ejecute dicha transición
+
+- Wildcards
+Es el operador de multiplicación (*)
+Indica que cualquier evento que se ejecute en el estado va a ser lo que diga dicho asterisco
+
+- Transiciones sin eventos
+Son transiciones intermedias con las cuales se puede realizar operaciones o transicionar a otros eventos
+
+- Transiciones protegidas
+Son aquellas transiciones las cuales transicionan a otros eventos mediante condicionales
+Se puede definir si pasa a un estado o a otro
+Se puede definir que dada una condicional no pasa al siguiente estado
+
+- Transiciones atrasadas
+Son transiciones que se ejecutan después de una cierta cantidad tiempo
