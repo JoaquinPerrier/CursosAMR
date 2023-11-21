@@ -129,3 +129,16 @@ Se puede definir que dada una condicional no pasa al siguiente estado
 
 - Transiciones atrasadas
 Son transiciones que se ejecutan después de una cierta cantidad tiempo
+
+<- ACCIONES ->
+Es una función que se ejecuta cuando estamos dentro de un estado
+
+Una acción puede ser:
+- De entrada
+    Se disparan cuando entramos a un nuevo estado
+- De salida
+    Se disparan cuando salimos de un estado
+- Durante una transición
+    Se invoca cuando estamos en proceso o terminando una transición
+
+<- CONTEXTO ->

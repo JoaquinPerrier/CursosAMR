@@ -6,6 +6,7 @@ export const BaseLayout = () => {
   const [state, send] = useMachine(bookingMachine);
 
   console.log("Nuestra máquina: ", state);
+  console.log("Nuestro contexto: ", state.context);
   console.log("matches", state.matches("inicial"));
   console.log("matches", state.matches("tickets"));
   console.log("can", state.can("START"));
