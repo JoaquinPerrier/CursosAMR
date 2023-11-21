@@ -1,4 +1,4 @@
-/*Contenido: FOR EACH, FILTER, REDUCE*/
+/*Contenido: FOR EACH, MAP, FILTER, REDUCE*/
 
 const letters = ["a", "b", "c"];
 const numbers = [1, 2, 3, 4, 5];
