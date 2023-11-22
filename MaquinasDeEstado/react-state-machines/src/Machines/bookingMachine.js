@@ -18,13 +18,24 @@ const bookingMachine = createMachine(
         entry: "imprimirEntrada",
         exit: "imprimirSalida",
         on: {
-          CONTINUE: "passengers",
+          CONTINUE: {
+            target: "passengers",
+            actions: assign({
+              selectedCountry: (context, event) => event.selectedCountry,
+            }),
+          },
           CANCEL: "inicial",
         },
       },
       passengers: {
         on: {
           DONE: "tickets",
+          ADD: {
+            target: "passengers",
+            actions: assign((context, event) =>
+              context.passengers.push(event.newPassenger)
+            ),
+          },
           CANCEL: "inicial",
         },
       },

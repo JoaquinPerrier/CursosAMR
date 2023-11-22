@@ -142,3 +142,62 @@ Una acción puede ser:
     Se invoca cuando estamos en proceso o terminando una transición
 
 <- CONTEXTO ->
+El contexto en general nos ayudará a guardar datos
+
+EJEMPLO:
+import { createMachine, assign } from "xstate";
+
+const bookingMachine = createMachine({
+		...,
+    context: {
+			// Objeto de contexto
+      passengers: [],
+      selectedCountry: "",
+    },
+    states: {...}
+	}
+);
+
+<- JERARQUIAS Y MÁQUINAS PARALELAS ->
+- Se puede crear varias máquinas a la vez y darles comunicación entre sí para poder crear flujos más complejos
+
+- Las jerarquías dentro de las máquinas de estados, nos permiten tener máquinas hijas dentro de una máquina más grande
+
+- Principalmente, podemos encontrar una jerarquía cuando una máquina de estados en un estado tendrá otra máquina de estados
+
+<- SERVICIOS ->
+- Servicio:
+Es una función que se invocan para realizar cierto procedimiento
+
+- send:
+Función para enviar eventos, para generar las transiciones
+
+const fillCountries = {
+  initial: 'loading',
+  states: {
+    loading: {
+      invoke: {
+        id: 'getCountries',
+        src: ()=> fetchCountries,
+        onDone: {
+          target: 'success',
+          actions: assign({
+            countries: (context,event)=> event.data 
+          })
+        },
+        onError: {
+          target: 'failure',
+          actions: assign({
+            error: 'Fallo el request'
+          })
+        }
+      }
+    },
+    success: {},
+    failure: {
+      on: {
+        RETRY: { target: 'loading'}
+      }
+    }
+  }
+}
